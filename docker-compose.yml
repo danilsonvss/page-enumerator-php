@@ -1,0 +1,13 @@
+name: php-page-enumerator
+
+services:
+  web:
+    build:
+      context: .
+    ports:
+      - "9009:80"
+    volumes:
+      - .:/var/www/html
+      - ./files:/var/www/html/files
+    working_dir: /var/www/html
+    command: php -S 0.0.0.0:80
