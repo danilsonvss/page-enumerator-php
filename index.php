@@ -1,46 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHP Page Enumerator - For Page Flip</title>
-    <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        form {
-            margin: 1rem;
-            padding: 1rem;
-            background-color: #eee;
-            border-radius: 10px;
-        }
-
-        input {
-            width: 100%;
-            border: 1px solid;
-            background-color: #fff;
-            padding: 0.5rem;
-        }
-
-        .field-group {
-            margin-bottom: 1rem;
-        }
-    </style>
+    <title>Upload de ZIP</title>
 </head>
-
 <body>
-    <form action="/" method="post" enctype="multipart/form-data">
-        <?php include 'processor.php'; ?>
-        <div class="field-group">
-            <label for="">Arquivo ZIP</label>
-            <input type="file" name="zip_file" id="zip_file">
-        </div>
-        <button type="submit">Processar</button>
+    <h1>Page Flip</h1>
+    <h2>Enviar arquivo ZIP com imagens</h2>
+    <form action="" method="POST" enctype="multipart/form-data">
+        <label>Arquivo ZIP:</label>
+        <input type="file" name="zip_file" accept=".zip" required><br><br>
+
+        <label>Destino:</label>
+        <select name="destination" required>
+            <option value="cubiculos">Cubículos</option>
+            <option value="caixas-paineis">Caixas Painéis</option>
+            <option value="extratores">Extratores</option>
+            <option value="qgbtccm">QGBT/CCM</option>
+            <option value="qtlog">QTLOG</option>
+            <option value="qtserv">QTSERV</option>
+        </select><br><br>
+
+        <button type="submit" name="submit">Enviar</button>
     </form>
 
-</body>
+    <?php
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        try {
+            require  __DIR__ . '/src/UploadHandler.php';
 
+            $handler = new UploadHandler($_FILES['zip_file'], $_POST['destination']);
+            $handler->process();
+            echo "<p>Imagens extraídas com sucesso para a pasta <strong>{$_POST['destination']}</strong>.</p>";
+            unset($_POST);
+        } catch (Exception $e) {
+            echo "<p>Erro: " . $e->getMessage() . "</p>";
+        }
+    }
+    ?>
+</body>
 </html>
